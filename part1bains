@@ -1,0 +1,60 @@
+class Package:
+    def __init__(self, id):
+        self.id = id
+        self.address = ""
+        self.office = ""
+        self.ownerName = ""
+        self.collected = False
+        self.delivered = False
+
+class Truck:
+    def __init__(self, id, n, loc):
+        self.id = id
+        self.size = n
+        self.location = loc
+        self.packages = []
+
+
+    def collectPackage(self, pk):
+        if len(self.packages) < self.size and pk not in self.packages and self.location == pk.office:
+            self.location = pk.office
+            self.packages.append(pk)
+            pk.collected = True
+            
+    def deliverOnePackage(self, pk):
+        self.location = pk.address
+
+        for i in range(len(self.packages)):
+            if self.packages[i].id == pk.id:
+                self.packages[i].delivered = True
+                self.packages.pop(i)
+                break
+
+    def deliverPackages(self):
+        self.location = self
+
+        i = 0
+        while i < len(self.packages):
+            if self.packages[i].address == self:
+                self.packages[i].delivered = True
+                self.packages.pop(i)
+            else:
+                i += 1
+        
+    def removePackage(self, pk):
+        for i in range(len(self.packages)):
+            if self.packages[i].id == pk.id:
+                package = self.packages.pop(i)
+                package.delivered = False
+                break
+            else:
+                return self.packages
+            pk.collected = False
+
+    def driveTo(self, loc):
+        if self.location == loc:
+            self.location = loc
+        
+    def getPackagesIds(self):
+        packageids = [package.id for package in self.packages]
+        return packageids
